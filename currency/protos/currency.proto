@@ -3,6 +3,9 @@ syntax = "proto3";
 service Currency {
     // GetRate returns the exchange rate for the two provided currency codes 
     rpc GetRate(RateRequest) returns (RateResponse);
+    // SubscribeRates allows a client to subscribe  for changes in an exchange rate
+    // when the rate changes a response will be sent
+    rpc SubscribeRates(stream RateRequest) returns (stream RateResponse);
 }
 
 // RateRequest defines the request for a GetRate call
@@ -17,7 +20,12 @@ message RateRequest {
 // rate which is a floating point number and can be used to convert between the 
 // two currencies specified in the request.
 message RateResponse {
-    double rate = 1;
+     // Base is the base currency code for the rate
+     Currencies Base = 1;
+     // Destination is the destination currency code for the rate
+     Currencies Destination = 2;
+
+    double rate = 3;
 }
 
 // Currencies is an enum which represents the allowed currencies for the API

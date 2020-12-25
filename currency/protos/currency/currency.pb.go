@@ -235,7 +235,11 @@ type RateResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Rate float64 `protobuf:"fixed64,1,opt,name=rate,proto3" json:"rate,omitempty"`
+	// Base is the base currency code for the rate
+	Base Currencies `protobuf:"varint,1,opt,name=Base,proto3,enum=Currencies" json:"Base,omitempty"`
+	// Destination is the destination currency code for the rate
+	Destination Currencies `protobuf:"varint,2,opt,name=Destination,proto3,enum=Currencies" json:"Destination,omitempty"`
+	Rate        float64    `protobuf:"fixed64,3,opt,name=rate,proto3" json:"rate,omitempty"`
 }
 
 func (x *RateResponse) Reset() {
@@ -270,6 +274,20 @@ func (*RateResponse) Descriptor() ([]byte, []int) {
 	return file_currency_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *RateResponse) GetBase() Currencies {
+	if x != nil {
+		return x.Base
+	}
+	return Currencies_EUR
+}
+
+func (x *RateResponse) GetDestination() Currencies {
+	if x != nil {
+		return x.Destination
+	}
+	return Currencies_EUR
+}
+
 func (x *RateResponse) GetRate() float64 {
 	if x != nil {
 		return x.Rate
@@ -287,8 +305,13 @@ var file_currency_proto_rawDesc = []byte{
 	0x12, 0x2d, 0x0a, 0x0b, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x69,
 	0x65, 0x73, 0x52, 0x0b, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0x22, 0x0a, 0x0c, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x12, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x04, 0x72,
+	0x72, 0x0a, 0x0c, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x1f, 0x0a, 0x04, 0x42, 0x61, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e,
+	0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x69, 0x65, 0x73, 0x52, 0x04, 0x42, 0x61, 0x73, 0x65,
+	0x12, 0x2d, 0x0a, 0x0b, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x69,
+	0x65, 0x73, 0x52, 0x0b, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x12, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x04, 0x72,
 	0x61, 0x74, 0x65, 0x2a, 0xb5, 0x02, 0x0a, 0x0a, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x69,
 	0x65, 0x73, 0x12, 0x07, 0x0a, 0x03, 0x45, 0x55, 0x52, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x55,
 	0x53, 0x44, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x4a, 0x50, 0x59, 0x10, 0x02, 0x12, 0x07, 0x0a,
@@ -308,11 +331,14 @@ var file_currency_proto_rawDesc = []byte{
 	0x4d, 0x58, 0x4e, 0x10, 0x1a, 0x12, 0x07, 0x0a, 0x03, 0x4d, 0x59, 0x52, 0x10, 0x1b, 0x12, 0x07,
 	0x0a, 0x03, 0x4e, 0x5a, 0x44, 0x10, 0x1c, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x48, 0x50, 0x10, 0x1d,
 	0x12, 0x07, 0x0a, 0x03, 0x53, 0x47, 0x44, 0x10, 0x1e, 0x12, 0x07, 0x0a, 0x03, 0x54, 0x48, 0x42,
-	0x10, 0x1f, 0x12, 0x07, 0x0a, 0x03, 0x5a, 0x41, 0x52, 0x10, 0x20, 0x32, 0x32, 0x0a, 0x08, 0x43,
+	0x10, 0x1f, 0x12, 0x07, 0x0a, 0x03, 0x5a, 0x41, 0x52, 0x10, 0x20, 0x32, 0x65, 0x0a, 0x08, 0x43,
 	0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x12, 0x26, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x52, 0x61,
 	0x74, 0x65, 0x12, 0x0c, 0x2e, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x0d, 0x2e, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x1a, 0x0d, 0x2e, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x31, 0x0a, 0x0e, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x52, 0x61, 0x74, 0x65,
+	0x73, 0x12, 0x0c, 0x2e, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x0d, 0x2e, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x28, 0x01,
+	0x30, 0x01, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -337,13 +363,17 @@ var file_currency_proto_goTypes = []interface{}{
 var file_currency_proto_depIdxs = []int32{
 	0, // 0: RateRequest.Base:type_name -> Currencies
 	0, // 1: RateRequest.Destination:type_name -> Currencies
-	1, // 2: Currency.GetRate:input_type -> RateRequest
-	2, // 3: Currency.GetRate:output_type -> RateResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 2: RateResponse.Base:type_name -> Currencies
+	0, // 3: RateResponse.Destination:type_name -> Currencies
+	1, // 4: Currency.GetRate:input_type -> RateRequest
+	1, // 5: Currency.SubscribeRates:input_type -> RateRequest
+	2, // 6: Currency.GetRate:output_type -> RateResponse
+	2, // 7: Currency.SubscribeRates:output_type -> RateResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_currency_proto_init() }
@@ -412,6 +442,9 @@ const _ = grpc.SupportPackageIsVersion6
 type CurrencyClient interface {
 	// GetRate returns the exchange rate for the two provided currency codes
 	GetRate(ctx context.Context, in *RateRequest, opts ...grpc.CallOption) (*RateResponse, error)
+	// SubscribeRates allows a client to subscribe  for changes in an exchange rate
+	// when the rate changes a response will be sent
+	SubscribeRates(ctx context.Context, opts ...grpc.CallOption) (Currency_SubscribeRatesClient, error)
 }
 
 type currencyClient struct {
@@ -431,10 +464,44 @@ func (c *currencyClient) GetRate(ctx context.Context, in *RateRequest, opts ...g
 	return out, nil
 }
 
+func (c *currencyClient) SubscribeRates(ctx context.Context, opts ...grpc.CallOption) (Currency_SubscribeRatesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Currency_serviceDesc.Streams[0], "/Currency/SubscribeRates", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &currencySubscribeRatesClient{stream}
+	return x, nil
+}
+
+type Currency_SubscribeRatesClient interface {
+	Send(*RateRequest) error
+	Recv() (*RateResponse, error)
+	grpc.ClientStream
+}
+
+type currencySubscribeRatesClient struct {
+	grpc.ClientStream
+}
+
+func (x *currencySubscribeRatesClient) Send(m *RateRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *currencySubscribeRatesClient) Recv() (*RateResponse, error) {
+	m := new(RateResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // CurrencyServer is the server API for Currency service.
 type CurrencyServer interface {
 	// GetRate returns the exchange rate for the two provided currency codes
 	GetRate(context.Context, *RateRequest) (*RateResponse, error)
+	// SubscribeRates allows a client to subscribe  for changes in an exchange rate
+	// when the rate changes a response will be sent
+	SubscribeRates(Currency_SubscribeRatesServer) error
 }
 
 // UnimplementedCurrencyServer can be embedded to have forward compatible implementations.
@@ -443,6 +510,9 @@ type UnimplementedCurrencyServer struct {
 
 func (*UnimplementedCurrencyServer) GetRate(context.Context, *RateRequest) (*RateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRate not implemented")
+}
+func (*UnimplementedCurrencyServer) SubscribeRates(Currency_SubscribeRatesServer) error {
+	return status.Errorf(codes.Unimplemented, "method SubscribeRates not implemented")
 }
 
 func RegisterCurrencyServer(s *grpc.Server, srv CurrencyServer) {
@@ -467,6 +537,32 @@ func _Currency_GetRate_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Currency_SubscribeRates_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(CurrencyServer).SubscribeRates(&currencySubscribeRatesServer{stream})
+}
+
+type Currency_SubscribeRatesServer interface {
+	Send(*RateResponse) error
+	Recv() (*RateRequest, error)
+	grpc.ServerStream
+}
+
+type currencySubscribeRatesServer struct {
+	grpc.ServerStream
+}
+
+func (x *currencySubscribeRatesServer) Send(m *RateResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *currencySubscribeRatesServer) Recv() (*RateRequest, error) {
+	m := new(RateRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _Currency_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "Currency",
 	HandlerType: (*CurrencyServer)(nil),
@@ -476,6 +572,13 @@ var _Currency_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Currency_GetRate_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SubscribeRates",
+			Handler:       _Currency_SubscribeRates_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "currency.proto",
 }
