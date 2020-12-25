@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/hashicorp/go-hclog"
 	protos "github.com/nicholasjackson/building-microservices-youtube/currency/protos/currency"
 )
@@ -144,6 +147,20 @@ func (p *ProductsDB) getRate(destination string) (float64, error) {
 
 	// get initial rate
 	resp, err := p.currency.GetRate(context.Background(), rr)
+	if err != nil {
+		// convert the GRPC error message
+		grpcError, ok := status.FromError(err)
+		if !ok {
+			// unable to convert grpc error
+			return -1, err
+		}
+
+		// if this is an Invalid Arguments exception santise the message before returning
+		if grpcError.Code() == codes.InvalidArgument {
+			return -1, fmt.Errorf("Unable to retreive exchange rate from currency service: %s", grpcError.Message())
+		}
+	}
+
 	p.rates[destination] = resp.Rate // update cache
 
 	// scbscribe for updates
