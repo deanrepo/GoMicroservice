@@ -44,7 +44,12 @@ func (c *Currency) handleUpdates() {
 					c.log.Error("Unable to get update rate", "base", rr.GetBase().String(), "destination", rr.GetDestination().String())
 				}
 
-				err = k.Send(&protos.RateResponse{Base: rr.Base, Destination: rr.Destination, Rate: r})
+				err = k.Send(
+					&protos.StreamingRateResponse{
+						Message: &protos.StreamingRateResponse_RateResponse{
+							RateResponse: &protos.RateResponse{Base: rr.Base, Destination: rr.Destination, Rate: r},
+						},
+					})
 				if err != nil {
 					c.log.Error("Unable to send updated rate", "base", rr.GetBase().String(), "destination", rr.GetDestination().String())
 				}
@@ -84,7 +89,6 @@ func (c *Currency) GetRate(ctx context.Context, rr *protos.RateRequest) (*protos
 
 // SubscribeRates implments the gRPC bidirection streaming method for the server
 func (c *Currency) SubscribeRates(src protos.Currency_SubscribeRatesServer) error {
-
 	// handle client messages
 	for {
 		rr, err := src.Recv() // Recv is a blocking method which returns on client data
@@ -101,10 +105,38 @@ func (c *Currency) SubscribeRates(src protos.Currency_SubscribeRatesServer) erro
 		}
 
 		c.log.Info("Handle client request", "request_base", rr.GetBase(), "request_dest", rr.GetDestination())
-
 		rrs, ok := c.subscriptions[src]
 		if !ok {
 			rrs = []*protos.RateRequest{}
+		}
+
+		// check that subscription does not exists
+		var validationErr *status.Status
+		for _, v := range rrs {
+			if v.Base == rr.Base && v.Destination == rr.Destination {
+				// subscription  exists return errors
+				validationErr = status.Newf(
+					codes.AlreadyExists,
+					"Unable to subscribe for currency as subscription already exists")
+				// add the original request as metadata
+				validationErr, err = validationErr.WithDetails(rr)
+				if err != nil {
+					c.log.Error("Unable to add metadata to error", "error", err)
+					break
+				}
+
+				break
+			}
+		}
+
+		// if a validation error return error and continue
+		if validationErr != nil {
+			src.Send(&protos.StreamingRateResponse{
+				Message: &protos.StreamingRateResponse_Error{
+					Error: validationErr.Proto(),
+				},
+			})
+			continue
 		}
 
 		rrs = append(rrs, rr)
